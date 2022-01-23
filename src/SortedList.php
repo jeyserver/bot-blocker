@@ -125,7 +125,7 @@ class SortedList implements Countable, Iterator, ArrayAccess {
 	protected function binarySearch($element): int {
 		$count = $this->count();
 		if ($count === 0) {
-			return 0;
+			return -1;
 		}
 		$low = 0;
 		$high = $count - 1;
@@ -145,7 +145,7 @@ class SortedList implements Countable, Iterator, ArrayAccess {
 				$low = $mid + 1;
 			}
 		}
-		return -$low;
+		return -max(1, $low);
 	}
 
 	/**

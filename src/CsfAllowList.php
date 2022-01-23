@@ -59,6 +59,19 @@ class CsfAllowList implements LoggerAwareInterface
         return $this->ips->has($ip);
     }
 
+	/**
+	 * @return \Generator<string>
+	 */
+	public function getIPs(): \Generator {
+		foreach ($this->ips as $ip) {
+			$ip = long2ip($ip);
+			if ($ip === false) {
+				continue;
+			}
+			yield $ip;
+		}
+	}
+
 	protected function processLine(string $line): void {
 		$x = 0;
 		for ($l = strlen($line); $x < $l; $x++) {
