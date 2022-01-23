@@ -26,7 +26,11 @@ class SortedList implements Countable, Iterator, ArrayAccess {
 		if ($this->count() == 0) {
 			$index = 0;
 		} else {
-			$index = abs($this->binarySearch($value));
+			$index = $this->binarySearch($value);
+			if ($index >= 0) {
+				return;
+			}
+			$index = - ($index + 1);
 		}
 		array_splice($this->data, $index, 0, [$value]);
 	}
@@ -113,7 +117,7 @@ class SortedList implements Countable, Iterator, ArrayAccess {
 		if ($a == $b) {
 			return 0;
 		}
-		if ($a < $b) {
+		if ($a > $b) {
 			return 1;
 		}
 		return -1;
@@ -138,14 +142,14 @@ class SortedList implements Countable, Iterator, ArrayAccess {
 				return $mid;
 			}
 	
-			if ($compare < 0) {
+			if ($compare > 0) {
 				$high = $mid -1;
 			}
 			else {
 				$low = $mid + 1;
 			}
 		}
-		return -max(1, $low);
+		return -($low + 1);
 	}
 
 	/**
