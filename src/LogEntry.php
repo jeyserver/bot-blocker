@@ -30,6 +30,11 @@ class LogEntry implements \JsonSerializable
         $this->parse($line);
     }
 
+    public function getFile(): LogFile
+    {
+        return $this->file;
+    }
+
     public function getStatus(): ?int
     {
         return $this->status;

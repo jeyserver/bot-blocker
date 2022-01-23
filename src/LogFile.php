@@ -12,8 +12,11 @@ class LogFile
      */
     protected $fd;
 
+    protected string $path;
+
     public function __construct(string $filename)
     {
+        $this->path = $filename;
         $fd = fopen($filename, 'r');
         if (false === $fd) {
             throw new Exception();
@@ -25,6 +28,11 @@ class LogFile
     public function __destruct()
     {
         fclose($this->fd);
+    }
+
+    public function getPath(): string {
+
+        return $this->path;
     }
 
     /**
