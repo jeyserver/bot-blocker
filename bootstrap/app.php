@@ -6,6 +6,7 @@ use dnj\Log\Logger;
 use Illuminate\Container\Container;
 use Inotify\InotifyProxy;
 use Psr\Log\LogLevel;
+use dnj\Filesystem\Local\File;
 
 $container = Container::getInstance();
 
@@ -16,6 +17,7 @@ $container->singleton(LogAnalyzer::class);
 $container->singleton(LogsWatcher::class);
 $container->singleton(NginxBlocker::class);
 $container->singleton(WhitelistManager::class);
+$container->singleton(CsfAllowList::class);
 $container->singleton(Rules\GoogleBotRule::class);
 $container->singleton(Rules\ServerErrorRule::class);
 $container->singleton(Rules\StaticFileRule::class);
@@ -26,9 +28,9 @@ $container->singleton(Rules\BruteForceRule::class, function () {
 });
 $container->singleton(Logger::class, function () {
     $logger = new Logger();
-    $logger->setQuiet(false);
-    $logger->setLevel(LogLevel::DEBUG);
-
+    $logger->setQuiet(true);
+    $logger->setLevel(LogLevel::NOTICE);
+    $logger->setFile(new File("/var/log/bot-blocker.log"));
     return $logger;
 });
 $container->bind(\Psr\Log\LoggerInterface::class, function ($container) {
