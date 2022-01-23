@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+namespace Arad\BotBlocker;
+
+if (is_dir( __DIR__ . "/../vendor")) {
+	require_once __DIR__ . "/../vendor/autoload.php";
+} else {
+	require_once __DIR__ . "/../autoload.php";
+}
+
+
+$container = require_once dirname(__DIR__) . "/bootstrap/app.php";
+$analyzer = $container->make(LogAnalyzer::class);
+$analyzer->getWatcher()->start();
+$process = $analyzer->read();
+while($process->valid()) {
+	$process->next();
+	$analyzer->getDefenseSystem()->clear();
+}

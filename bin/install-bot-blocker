@@ -1,0 +1,31 @@
+#!/usr/bin/env php
+<?php
+
+if (is_dir( __DIR__ . "/../vendor")) {
+	require_once __DIR__ . "/../vendor/autoload.php";
+} else {
+	require_once __DIR__ . "/../autoload.php";
+}
+
+
+$serviceFilePath = "/etc/systemd/system/bot-blocker.service";
+if (is_file($serviceFilePath)) {
+	fwrite(STDERR, "Service 'bot-blocker.service' is already installed\n");
+	exit(1);
+}
+
+$pathToBotBlocker = __DIR__ . "/bot-blocker";
+$phpBin = PHP_BINARY;
+$serviceFileContent = <<<EOF
+[Service]
+Type=simple
+ExecStart={$phpBin} -d disable_functions {$pathToBotBlocker}
+
+[Install]
+WantedBy=multi-user.target
+EOF;
+
+
+file_put_contents($serviceFilePath, $serviceFileContent);
+shell_exec("systemctl enable bot-blocker");
+echo ("To start the start run:\n\tsystemctl start bot-blocker\n");
