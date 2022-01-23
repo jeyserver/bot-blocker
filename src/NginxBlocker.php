@@ -90,7 +90,7 @@ class NginxBlocker implements IDefenseSystem, LoggerAwareInterface
 
     protected function rewrite(): void
     {
-        if (null !== $this->lastRewrite and $this->lastRewrite < time() - $this->rewriteWaitTime) {
+        if (null !== $this->lastRewrite and  time() - $this->lastRewrite < $this->rewriteWaitTime) {
             return;
         }
         $file = $this->file->openFile('w');
