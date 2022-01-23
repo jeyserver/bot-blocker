@@ -38,7 +38,7 @@ class LogsWatcher implements LoggerAwareInterface
 
     public function getLogsDirectory(): string
     {
-        return '/var/log/nginx/';
+        return '/var/log/nginx/domains/';
     }
 
     public function start(): void
