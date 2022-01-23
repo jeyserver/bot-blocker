@@ -1,10 +1,11 @@
 {
 	"name": "arad/bot-blocker",
+	"license": "proprietary",
 	"homepage": "https://git.jeyserver.com/arad/bot-blocker",
 	"require": {
 		"php": "^7.4|^8.0",
 		"dnj/local-filesystem": "^1.0",
-		"dnj/log": "dev-master",
+		"dnj/log": "^1.1",
 		"kassner/log-parser": "^2.1",
 		"league/mime-type-detection": "^1.9",
 		"krowinski/php-inotify": "^2.0",
@@ -32,12 +33,6 @@
 	},
 	"bin": [
 		"bin/bot-blocker"
-	],
-	"repositories": [
-		{
-			"type": "path",
-			"url": "/home/composer/dnj/log"
-		}
 	],
 	"minimum-stability": "dev",
 	"prefer-stable": true
