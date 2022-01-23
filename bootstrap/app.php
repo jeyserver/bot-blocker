@@ -2,11 +2,11 @@
 
 namespace Arad\BotBlocker;
 
+use dnj\Filesystem\Local\File;
 use dnj\Log\Logger;
 use Illuminate\Container\Container;
 use Inotify\InotifyProxy;
 use Psr\Log\LogLevel;
-use dnj\Filesystem\Local\File;
 
 $container = Container::getInstance();
 
@@ -30,7 +30,8 @@ $container->singleton(Logger::class, function () {
     $logger = new Logger();
     $logger->setQuiet(true);
     $logger->setLevel(LogLevel::NOTICE);
-    $logger->setFile(new File("/var/log/bot-blocker.log"));
+    $logger->setFile(new File('/var/log/bot-blocker.log'));
+
     return $logger;
 });
 $container->bind(\Psr\Log\LoggerInterface::class, function ($container) {

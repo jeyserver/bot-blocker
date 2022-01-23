@@ -11,10 +11,10 @@ class WhitelistManager
 
     protected CsfAllowList $csfAllowList;
 
-    public function __construct(CsfAllowList $csfAllowList) {
+    public function __construct(CsfAllowList $csfAllowList)
+    {
         $this->csfAllowList = $csfAllowList;
         $this->csfAllowList->reload();
-
     }
 
     public function add(string $ip): void

@@ -30,8 +30,8 @@ class LogFile
         fclose($this->fd);
     }
 
-    public function getPath(): string {
-
+    public function getPath(): string
+    {
         return $this->path;
     }
 
