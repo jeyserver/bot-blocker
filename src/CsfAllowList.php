@@ -37,7 +37,17 @@ class CsfAllowList implements LoggerAwareInterface
 
     public function reload(): void
     {
-        $file = new File('/etc/csf/csf.allow');
+        $this->ips = new SortedList();
+        $files = [
+            new File('/etc/csf/csf.allow'),
+            new File('/etc/csf/csf.ignore'),
+        ];
+        foreach ($files as $file) {
+            $this->addFromFile($file);
+        }
+    }
+
+    public function addFromFile(File $file): void {
         if (!$file->exists()) {
             return;
         }
