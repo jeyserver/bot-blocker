@@ -47,7 +47,8 @@ class CsfAllowList implements LoggerAwareInterface
         }
     }
 
-    public function addFromFile(File $file): void {
+    public function addFromFile(File $file): void
+    {
         if (!$file->exists()) {
             return;
         }
