@@ -2,6 +2,7 @@
 
 namespace Arad\BotBlocker;
 
+use Exception;
 use Generator;
 use Inotify\InotifyEvent;
 use Inotify\InotifyEventCodeEnum;
@@ -38,7 +39,15 @@ class LogsWatcher implements LoggerAwareInterface
 
     public function getLogsDirectory(): string
     {
-        return '/var/log/nginx/domains/';
+        $general = '/var/log/nginx/';
+        $domains = "{$general}/domains/";
+        foreach ([$domains, $general] as $path) {
+            if (is_dir($path)) {
+                return $path;
+            }
+        }
+
+        throw new Exception('no path cannot find for nginx logs');
     }
 
     public function start(): void
