@@ -4,6 +4,7 @@ namespace Arad\BotBlocker;
 
 use Exception;
 use Generator;
+use Kassner\LogParser\FormatException;
 
 class LogFile
 {
@@ -41,7 +42,14 @@ class LogFile
     public function read(): Generator
     {
         while (($line = stream_get_line($this->fd, 10 * 1024, PHP_EOL)) !== false) {
-            yield new LogEntry($this, $line);
+            $entry = null;
+            try {
+                $entry = new LogEntry($this, $line);
+            } catch (FormatException $e) {
+            }
+            if (null !== $entry) {
+                yield $entry;
+            }
         }
     }
 }
