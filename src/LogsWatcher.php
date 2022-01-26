@@ -83,7 +83,13 @@ class LogsWatcher implements LoggerAwareInterface
         $path = $event->getPathWithFile();
         if (!isset($this->logFiles[$path])) {
             $this->logger->debug('open the log file', ['path' => $path]);
-            $this->logFiles[$path] = new LogFile($path);
+            try {
+                $this->logFiles[$path] = new LogFile($path);
+            } catch (Exception $e) {
+                $this->logger->error("Error in opening of '{$path}'", ['exception' => $e->__toString()]);
+
+                return;
+            }
         }
         $this->logger->debug('start reading new entries', ['path' => $path]);
         foreach ($this->logFiles[$path]->read() as $entry) {

@@ -2,12 +2,12 @@
 
 namespace Arad\BotBlocker\Rules;
 
-use Exception;
 use Arad\BotBlocker\IRule;
 use Arad\BotBlocker\LogEntry;
 use dnj\Filesystem\Exceptions\NotFoundException;
 use dnj\Filesystem\Local;
 use dnj\Filesystem\Tmp;
+use Exception;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;

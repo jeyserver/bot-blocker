@@ -145,9 +145,9 @@ class NginxBlocker implements IDefenseSystem, LoggerAwareInterface
             return;
         }
         $includes = file_get_contents($includesPath);
-        if (false === $includes or false !== strpos($includes, $this->file->getPath())) {
+        if (false === $includes or false !== strpos($includes, $this->file->getPathname())) {
             return;
         }
-        file_put_contents($includesPath, "\ninclude {$this->file->getPath()};\n", FILE_APPEND);
+        file_put_contents($includesPath, "\ninclude {$this->file->getPathname()};\n", FILE_APPEND);
     }
 }
