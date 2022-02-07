@@ -14,16 +14,30 @@ class LogFile
     protected $fd;
 
     protected string $path;
+    protected int $inode;
 
     public function __construct(string $filename)
     {
         $this->path = $filename;
-        $fd = fopen($filename, 'r');
+        $this->reopen();
+    }
+
+    public function reopen(): void
+    {
+        if (isset($this->fd)) { // @phpstan-ignore-line
+            fclose($this->fd);
+        }
+        $fd = fopen($this->path, 'r');
         if (false === $fd) {
             throw new Exception();
         }
         $this->fd = $fd;
         fseek($this->fd, 0, SEEK_END);
+        $inode = fileinode($this->path);
+        if (false === $inode) {
+            throw new Exception();
+        }
+        $this->inode = $inode;
     }
 
     public function __destruct()
@@ -41,7 +55,11 @@ class LogFile
      */
     public function read(): Generator
     {
-        while (($line = stream_get_line($this->fd, 10 * 1024, PHP_EOL)) !== false) {
+        if (fileinode($this->path) != $this->inode) {
+            $this->reopen();
+        }
+        $line = stream_get_line($this->fd, 10 * 1024, PHP_EOL);
+        while (false !== $line) {
             $entry = null;
             try {
                 $entry = new LogEntry($this, $line);
@@ -50,6 +68,7 @@ class LogFile
             if (null !== $entry) {
                 yield $entry;
             }
+            $line = stream_get_line($this->fd, 10 * 1024, PHP_EOL);
         }
     }
 }
