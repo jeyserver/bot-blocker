@@ -1,27 +1,53 @@
+image: ghcr.io/dnj/php-alpine:8.0-mysql-nginx
+
 stages:
-  - pre-test
   - test
 
-install-dependencies:
-  image: ghcr.io/dnj/php-alpine:8.0-mysql-nginx
-  stage: pre-test
+composer-validate:
+  stage: test
+  before_script:
+    - composer --version
   script:
-    - rm -fr vendor
-    - composer install
+    - composer validate
+
+install-dependencies:
+  stage: test
+  cache:
+    key:
+      files:
+        - composer.lock
+        - composer.json
+    paths:
+      - vendor/
+  script:
+    - composer install --no-interaction
 
 test-types:
-  image: ghcr.io/dnj/php-alpine:8.0-mysql-nginx
   stage: test
+  cache:
+    key:
+      files:
+        - composer.lock
+        - composer.json
+    paths:
+      - vendor/
+    policy: pull
   dependencies:
     - install-dependencies
   script:
     - composer run test:types
 
 test-codestyle:
-  image: ghcr.io/dnj/php-alpine:8.0-mysql-nginx
   stage: test
+  cache:
+    key:
+      files:
+        - composer.lock
+        - composer.json
+    paths:
+      - vendor/
+    policy: pull
   dependencies:
     - install-dependencies
   script:
     - composer run test:codestyle
-
