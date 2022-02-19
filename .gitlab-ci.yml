@@ -1,0 +1,27 @@
+stages:
+  - pre-test
+  - test
+
+install-dependencies:
+  image: ghcr.io/dnj/php-alpine:8.0-mysql-nginx
+  stage: pre-test
+  script:
+    - rm -fr vendor
+    - composer install
+
+test-types:
+  image: ghcr.io/dnj/php-alpine:8.0-mysql-nginx
+  stage: test
+  dependencies:
+    - install-dependencies
+  script:
+    - composer run test:types
+
+test-codestyle:
+  image: ghcr.io/dnj/php-alpine:8.0-mysql-nginx
+  stage: test
+  dependencies:
+    - install-dependencies
+  script:
+    - composer run test:codestyle
+
