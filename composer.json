@@ -22,6 +22,7 @@
 		"test:types": "vendor/bin/phpstan analyze",
 		"test:phpunit": "vendor/bin/phpunit",
 		"test:codestyle": "vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no",
+		"test:codestyle:fix": "vendor/bin/php-cs-fixer fix -v --using-cache=no",
 		"test": [
 			"@test:types",
 			"@test:phpunit",
