@@ -44,7 +44,7 @@ class PhpFpmMonitor implements IMonitorSystem, LoggerAwareInterface
         if (null === $status) {
             return;
         }
-        if (!in_array($status, [500, 502, 503, 504])) {
+        if (!in_array($status, [502, 503, 504])) {
             return;
         }
         $this->logger->debug('new server error occurred', ['code' => $status]);
