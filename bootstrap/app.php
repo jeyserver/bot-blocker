@@ -11,11 +11,13 @@ use Psr\Log\LogLevel;
 $container = Container::getInstance();
 
 $container->singleton(IDefenseSystem::class, NginxBlocker::class);
+$container->singleton(IMonitorSystem::class, PhpFpmMonitor::class);
 $container->singleton(InotifyProxy::class);
 $container->singleton(GoogleBotDetector::class);
 $container->singleton(LogAnalyzer::class);
 $container->singleton(LogsWatcher::class);
 $container->singleton(NginxBlocker::class);
+$container->singleton(PhpFpmMonitor::class);
 $container->singleton(WhitelistManager::class);
 $container->singleton(CsfAllowList::class);
 $container->singleton(Rules\GoogleBotRule::class);

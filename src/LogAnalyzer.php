@@ -10,6 +10,7 @@ class LogAnalyzer implements LoggerAwareInterface
 {
     protected LogsWatcher $watcher;
     protected IDefenseSystem $defenseSystem;
+    protected IMonitorSystem $monitorSystem;
     protected RulesQueue $rules;
     protected LoggerInterface $logger;
     protected int $blockDuration;
@@ -17,12 +18,14 @@ class LogAnalyzer implements LoggerAwareInterface
     public function __construct(
         LogsWatcher $watcher,
         IDefenseSystem $defenseSystem,
+        IMonitorSystem $monitorSystem,
         RulesQueue $rules,
         LoggerInterface $logger,
         int $blockDuration = 3600
     ) {
         $this->watcher = $watcher;
         $this->defenseSystem = $defenseSystem;
+        $this->monitorSystem = $monitorSystem;
         $this->rules = $rules;
         $this->logger = $logger;
         $this->blockDuration = $blockDuration;
@@ -98,5 +101,7 @@ class LogAnalyzer implements LoggerAwareInterface
         } elseif ($score <= -1) {
             $this->logger->info('Skip beacause', ['entry' => $entry, 'reason' => $rulesScores]);
         }
+
+        $this->monitorSystem->processEntry($entry);
     }
 }

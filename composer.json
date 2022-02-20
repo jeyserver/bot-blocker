@@ -1,5 +1,6 @@
 {
 	"name": "arad/bot-blocker",
+	"description": "Watch and analyze Nginx access logs to block bad bots and crawlers.",
 	"license": "proprietary",
 	"homepage": "https://git.jeyserver.com/arad/bot-blocker",
 	"require": {
@@ -22,6 +23,7 @@
 		"test:types": "vendor/bin/phpstan analyze",
 		"test:phpunit": "vendor/bin/phpunit",
 		"test:codestyle": "vendor/bin/php-cs-fixer fix -v --dry-run --stop-on-violation --using-cache=no",
+		"test:codestyle:fix": "vendor/bin/php-cs-fixer fix -v --using-cache=no",
 		"test": [
 			"@test:types",
 			"@test:phpunit",
