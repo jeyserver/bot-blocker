@@ -31,6 +31,9 @@ class StaticFileRule implements IRule
         if (!preg_match("/\.([\w\d]+)$/", $path, $matches)) {
             return 0;
         }
+        if (preg_match("/^\/wp-content\/themes\/[^\/]+\/styles\.php$/", $path)) {
+            return -1;
+        }
         if ('php' == substr($matches[1], 0, 3)) {
             return 0;
         }
