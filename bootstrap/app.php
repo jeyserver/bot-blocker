@@ -19,6 +19,7 @@ $container->singleton(LogsWatcher::class);
 $container->singleton(NginxBlocker::class);
 $container->singleton(PhpFpmMonitor::class);
 $container->singleton(WhitelistManager::class);
+$container->singleton(SelfIPsList::class);
 $container->singleton(CsfAllowList::class);
 $container->singleton(Rules\GoogleBotRule::class);
 $container->singleton(Rules\ServerErrorRule::class);
