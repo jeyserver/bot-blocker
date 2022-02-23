@@ -2,6 +2,8 @@
 
 namespace Arad\BotBlocker;
 
+use Exception;
+
 class WhitelistManager
 {
     /**
