@@ -46,7 +46,7 @@ class WhitelistManager
         $end = 2147483648; // $start + pow(2, 32 - 8);
         $long = ip2long($ip);
         if (false === $long) {
-            throw new Exception();
+            return false;
         }
 
         return $long >= $start and $long < $end;
