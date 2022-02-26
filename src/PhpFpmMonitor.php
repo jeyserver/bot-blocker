@@ -8,12 +8,31 @@ use Psr\Log\LoggerInterface;
 
 class PhpFpmMonitor implements IMonitorSystem, LoggerAwareInterface
 {
-    /** @var array<string|int,string> */
+    /**
+     * @var array<string|int,string>
+     */
     protected array $systemdServices = [];
-    /** @var array<int,int> */
+
+    /**
+     * @var array<int,int>
+     */
     protected array $errorsCount = [];
+
     protected int $restartThreshold;
+
     protected LoggerInterface $logger;
+
+    /**
+     * @var string[]
+     */
+    protected array $files = [];
+
+    /**
+     * @var string[]
+     */
+    protected array $lastFiles = [];
+
+    protected ?int $lastRestart = null;
 
     public function __construct(
         LoggerInterface $logger,
@@ -48,14 +67,33 @@ class PhpFpmMonitor implements IMonitorSystem, LoggerAwareInterface
             return;
         }
         $this->logger->debug('new server error occurred', ['code' => $status]);
+        $path = $entry->getFile()->getPath();
+        if (!in_array($path, $this->files)) {
+            $this->files[] = $path;
+        }
 
         $this->errorsCount[$status] = $this->errorsCount[$status] ?? 0;
         ++$this->errorsCount[$status];
-
-        if (array_sum($this->errorsCount) >= $this->restartThreshold) {
-            $this->logger->info('restart php fpm services');
+        $now = time();
+        sort($this->files);
+        sort($this->lastFiles);
+        if (
+            array_sum($this->errorsCount) >= $this->restartThreshold and
+            (
+                null === $this->lastRestart or
+                $now - $this->lastRestart > 60 or
+                ($now - $this->lastRestart > 10 and $this->lastFiles != $this->files)
+            )
+        ) {
+            $this->logger->notice('restart php fpm services', [
+                'lastRestart' => $this->lastRestart,
+                'files' => $this->files,
+            ]);
             $this->restartPhpFpmServies();
             $this->errorsCount = [];
+            $this->lastRestart = $now;
+            $this->lastFiles = $this->files;
+            $this->files = [];
         }
     }
 
@@ -63,7 +101,7 @@ class PhpFpmMonitor implements IMonitorSystem, LoggerAwareInterface
     {
         foreach ($this->systemdServices as $phpVersion => $serviceName) {
             $command = 'systemctl restart '.$serviceName;
-            $this->logger->info('run command:', ['command' => $command]);
+            $this->logger->notice('run command:', ['command' => $command]);
             shell_exec($command);
             sleep(1);
         }
