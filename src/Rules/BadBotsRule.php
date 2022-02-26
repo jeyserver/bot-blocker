@@ -58,6 +58,7 @@ class BadBotsRule implements IRule, LoggerAwareInterface
                 continue;
             }
             $bad = str_replace('\\ ', ' ', $bad);
+            $bad = preg_quote($bad, '/');
             $this->bads[] = $bad;
         }
     }
@@ -94,8 +95,8 @@ class BadBotsRule implements IRule, LoggerAwareInterface
             return 0;
         }
         foreach ($this->bads as $bad) {
-            if (false !== stripos($agent, $bad)) {
-                $this->logger->debug("user-agent contains '{$bad}' keyword");
+            if (preg_match("/(?:\\b){$bad}(?:\\b)/i", $agent, $matches)) {
+                $this->logger->debug("user-agent contains '{$matches[0]}' keyword");
 
                 return 1;
             }
