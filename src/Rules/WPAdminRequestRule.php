@@ -16,6 +16,9 @@ class WPAdminRequestRule implements IRule
         if ('/wp-admin/' !== substr($path, 0, strlen('/wp-admin/'))) {
             return 0;
         }
+        if ('/wp-json/yoast/' !== substr($path, 0, strlen('/wp-json/yoast/'))) {
+            return 0;
+        }
 
         return -1;
     }
