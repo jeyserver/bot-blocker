@@ -20,6 +20,8 @@ if (is_file($serviceFilePath)) {
 [Service]
 Type=simple
 ExecStart={$phpBin} -d disable_functions {$pathToBotBlocker}
+Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target
