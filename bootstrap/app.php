@@ -55,7 +55,7 @@ $container->singleton(Rules\WPBruteForceRule::class, function ($container) {
 $container->singleton(Application::class, function ($container) {
     $app = new Application();
     $app->add(new Commands\Start($container));
-    $app->add(new Commands\Install());
+    $app->add(new Commands\Install($container));
 
     return $app;
 });

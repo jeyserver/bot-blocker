@@ -6,10 +6,19 @@ use dnj\Filesystem\Local;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Illuminate\Container\Container;
 
 class Install extends Command
 {
     protected static $defaultName = 'install';
+
+    protected Container $app;
+
+    public function __construct(Container $app)
+    {
+        $this->app = $app;
+        parent::__construct();
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -28,7 +37,7 @@ class Install extends Command
             return Command::FAILURE;
         }
 
-        $pathToBotBlocker = __DIR__.'/bot-blocker';
+        $pathToBotBlocker = $this->app->make("bin-path");
         $phpBin = PHP_BINARY;
         $content = <<<EOF
 [Service]
