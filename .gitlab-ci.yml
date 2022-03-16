@@ -67,7 +67,7 @@ build phar:
   before_script:
     - composer global require humbug/box
   script:
-    - box compile
+    - composer global exec box compile
     - echo "BUILD_PHAR_CI_JOB_ID=${CI_JOB_ID}" >> build.env
 
   artifacts:
