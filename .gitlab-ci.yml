@@ -64,6 +64,16 @@ publish composer:
 
 build phar:
   stage: deploy
+  cache:
+    key:
+      files:
+        - composer.lock
+        - composer.json
+    paths:
+      - vendor/
+    policy: pull
+  dependencies:
+    - install-dependencies
   before_script:
     - composer global require humbug/box
   script:
