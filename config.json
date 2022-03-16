@@ -33,5 +33,5 @@
 		"level": "notice"
 	},
 	"monitor-system": "Arad\\BotBlocker\\PhpFpmMonitor",
-	"defense-system": "Arad\\BotBlocker\\NginxBlocker"
+	"defense-system": "Arad\\BotBlocker\\CsfFirewall"
 }
