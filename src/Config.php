@@ -73,7 +73,7 @@ class Config
             throw new Exception('options must be array<string,mixed>');
         }
 
-        /*
+        /**
          * @var array{name:class-string,options:array<string,mixed>} $class
          */
         return $class;
