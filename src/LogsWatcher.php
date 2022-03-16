@@ -62,7 +62,6 @@ class LogsWatcher implements LoggerAwareInterface
 
     public function start(): void
     {
-
         /**
          * @var int
          */
