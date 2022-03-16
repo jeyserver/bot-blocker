@@ -174,7 +174,7 @@ class Config
          * @var class-string|null
          */
         $monitorSystem = $this->get('monitor-system');
-        $app->singleton(IMonitorSystem::class, $monitorSystem ? $monitorSystem : fn() => null);
+        $app->singleton(IMonitorSystem::class, $monitorSystem ? $monitorSystem : fn () => null);
     }
 
     protected function applyRules(Container $app): void

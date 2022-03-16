@@ -45,6 +45,12 @@ $container->singleton(Rules\BruteForceRule::class, function ($container) {
 
     return new Rules\BruteForceRule($options['maxRequests'] ?? 100, $options['period'] ?? 120);
 });
+$container->singleton(Rules\WPBruteForceRule::class, function ($container) {
+    $config = $container->make(Config::class);
+    $options = $config->getOptionsFor(Rules\WPBruteForceRule::class);
+
+    return new Rules\WPBruteForceRule($options['maxRequests'] ?? 10, $options['period'] ?? 60);
+});
 $container->singleton(Application::class, function ($container) {
     $app = new Application();
     $app->add(new Commands\Start($container));
