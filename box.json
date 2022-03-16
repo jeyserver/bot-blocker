@@ -1,0 +1,8 @@
+{
+	"main": "bin/bot-blocker",
+	"output": "bot-blocker.phar",
+	"directories": ["bootstrap", "src", "vendor"],
+	"directories-bin": ["bin"],
+	"exclude-dev-files": true,
+	"compression": "GZ"
+}

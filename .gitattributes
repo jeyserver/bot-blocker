@@ -4,3 +4,4 @@ phpstan.neon export-ignore
 .gitattributes export-ignore
 .php-cs-fixer.php export-ignore
 config.json export-ignore
+box.json export-ignore
