@@ -37,29 +37,41 @@ class LogsWatcher implements LoggerAwareInterface
         return $this->logger;
     }
 
-    public function getLogsDirectory(): string
+    /**
+     * @return string[]
+     */
+    public function getLogsDirectories(): array
     {
-        $general = '/var/log/nginx/';
-        $domains = "{$general}/domains/";
-        foreach ([$domains, $general] as $path) {
+        $directories = [];
+        foreach ([
+            '/var/log/nginx/',
+            '/var/log/nginx/domains/',
+            '/var/log/httpd/',
+            '/var/log/httpd/domains/',
+        ] as $path) {
             if (is_dir($path)) {
-                return $path;
+                $directories[] = $path;
             }
         }
+        if (empty($directories)) {
+            throw new Exception('no path cannot find for webserver logs');
+        }
 
-        throw new Exception('no path cannot find for nginx logs');
+        return $directories;
     }
 
     public function start(): void
     {
-        $this->logger->debug('add logs directory to inotify watch');
 
         /**
          * @var int
          */
         $events = InotifyEventCodeEnum::ON_MODIFY()->getValue();
-        $resource = new WatchedResource($this->getLogsDirectory(), $events, 'logs-dir');
-        $this->inotify->addWatch($resource);
+        foreach ($this->getLogsDirectories() as $directory) {
+            $this->logger->debug("add '{$directory}' directory to inotify watch");
+            $resource = new WatchedResource($directory, $events, 'logs-dir');
+            $this->inotify->addWatch($resource);
+        }
     }
 
     /**
