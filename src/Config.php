@@ -160,7 +160,7 @@ class Config
     protected function applyDefenseSystem(Container $app): void
     {
         /**
-         * @var class-string
+         * @var class-string|null
          */
         $defenseSystem = $this->get('defense-system');
         if ($defenseSystem) {
@@ -171,12 +171,10 @@ class Config
     protected function applyMonitorSystem(Container $app): void
     {
         /**
-         * @var class-string
+         * @var class-string|null
          */
         $monitorSystem = $this->get('monitor-system');
-        if ($monitorSystem) {
-            $app->singleton(IMonitorSystem::class, $monitorSystem);
-        }
+        $app->singleton(IMonitorSystem::class, $monitorSystem ? $monitorSystem : fn() => null);
     }
 
     protected function applyRules(Container $app): void
