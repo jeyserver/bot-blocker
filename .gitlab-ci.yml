@@ -1,4 +1,4 @@
-image: ghcr.io/dnj/php-alpine:8.0-mysql-nginx
+image: ghcr.io/dnj/php-alpine:7.4-mysql-nginx
 
 stages:
   - test
