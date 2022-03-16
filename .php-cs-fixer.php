@@ -10,6 +10,7 @@ $finder = PhpCsFixer\Finder::create()
 $config = new PhpCsFixer\Config();
 return $config->setRules([
         '@Symfony' => true,
+        'phpdoc_to_comment' => false,
     ])
     ->setFinder($finder)
 ;
