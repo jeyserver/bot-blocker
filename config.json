@@ -1,0 +1,30 @@
+{
+	"rules": [
+		"Arad\\BotBlocker\\Rules\\AlreadyBlockedRule",
+		"Arad\\BotBlocker\\Rules\\WhiteListedRule",
+		"Arad\\BotBlocker\\Rules\\GoogleBotRule",
+		"Arad\\BotBlocker\\Rules\\StaticFileRule",
+		"Arad\\BotBlocker\\Rules\\WPAdminRequestRule",
+		"Arad\\BotBlocker\\Rules\\ServerErrorRule",
+		{
+			"name": "Arad\\BotBlocker\\Rules\\BadBotsRule",
+			"options": {
+				"list": "bad-user-agents.list"
+			}
+		},
+		{
+			"name": "Arad\\BotBlocker\\Rules\\BruteForceRule",
+			"options": {
+				"maxRequests": 100,
+				"period": 120
+			}
+		}
+	],
+	"logging": {
+		"file": "/var/log/bot-blocker.log",
+		"quiet": true,
+		"level": "notice"
+	},
+	"monitor-system": "Arad\\BotBlocker\\PhpFpmMonitor",
+	"defense-system": "Arad\\BotBlocker\\NginxBlocker"
+}

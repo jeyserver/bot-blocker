@@ -4,14 +4,14 @@ namespace Arad\BotBlocker;
 
 use dnj\Filesystem\Local\File;
 use dnj\Log\Logger;
+use Exception;
 use Illuminate\Container\Container;
 use Inotify\InotifyProxy;
-use Psr\Log\LogLevel;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Application;
 
 $container = Container::getInstance();
 
-$container->singleton(IDefenseSystem::class, NginxBlocker::class);
-$container->singleton(IMonitorSystem::class, PhpFpmMonitor::class);
 $container->singleton(InotifyProxy::class);
 $container->singleton(GoogleBotDetector::class);
 $container->singleton(LogAnalyzer::class);
@@ -26,33 +26,49 @@ $container->singleton(Rules\ServerErrorRule::class);
 $container->singleton(Rules\StaticFileRule::class);
 $container->singleton(Rules\WhiteListedRule::class);
 $container->singleton(Rules\AlreadyBlockedRule::class);
-$container->singleton(Rules\BruteForceRule::class, function () {
-    return new Rules\BruteForceRule(100, 120);
-});
-$container->singleton(Logger::class, function () {
-    $logger = new Logger();
-    $logger->setQuiet(true);
-    $logger->setLevel(LogLevel::NOTICE);
-    $logger->setFile(new File('/var/log/bot-blocker.log'));
+$container->singleton(Logger::class);
+$container->singleton(LoggerInterface::class, Logger::class);
+$container->singleton(Rules\BadBotsRule::class, function ($container) {
+    $logger = $container->make(LoggerInterface::class);
+    $config = $container->make(Config::class);
+    $filePath = $config->getFilePath(Rules\BadBotsRule::class.'.options.list');
+    if (!$filePath) {
+        throw new Exception('Cannot find bad bots list');
+    }
+    $list = new File($filePath);
 
-    return $logger;
+    return new Rules\BadBotsRule($logger, $list);
 });
-$container->bind(\Psr\Log\LoggerInterface::class, function ($container) {
-    return $container->make(Logger::class)->getInstance();
+$container->singleton(Rules\BruteForceRule::class, function ($container) {
+    $config = $container->make(Config::class);
+    $options = $config->getOptionsFor(Rules\BruteForceRule::class);
+
+    return new Rules\BruteForceRule($options['maxRequests'] ?? 100, $options['period'] ?? 120);
+});
+$container->singleton(Application::class, function ($container) {
+    $app = new Application();
+    $app->add(new Commands\Start($container));
+    $app->add(new Commands\Install());
+
+    return $app;
 });
 
-$container->singleton(RulesQueue::class, function ($container) {
-    $rules = new RulesQueue();
-    $rules->enqueue($container->make(Rules\AlreadyBlockedRule::class));
-    $rules->enqueue($container->make(Rules\WhiteListedRule::class));
-    $rules->enqueue($container->make(Rules\GoogleBotRule::class));
-    $rules->enqueue($container->make(Rules\StaticFileRule::class));
-    $rules->enqueue($container->make(Rules\WPAdminRequestRule::class));
-    $rules->enqueue($container->make(Rules\ServerErrorRule::class));
-    $rules->enqueue($container->make(Rules\BadBotsRule::class));
-    $rules->enqueue($container->make(Rules\BruteForceRule::class));
+$container->singleton('bin-path', function () {
+    $pharPath = \Phar::running(false);
+    if ($pharPath) {
+        return $pharPath;
+    }
 
-    return $rules;
+    return dirname(__DIR__).'/bin/bot-blocker';
+});
+
+$container->singleton('bin-dir-path', function () {
+    $pharPath = \Phar::running(false);
+    if ($pharPath) {
+        return dirname($pharPath);
+    }
+
+    return dirname(__DIR__);
 });
 
 return $container;

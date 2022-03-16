@@ -53,7 +53,12 @@ class LogsWatcher implements LoggerAwareInterface
     public function start(): void
     {
         $this->logger->debug('add logs directory to inotify watch');
-        $resource = new WatchedResource($this->getLogsDirectory(), InotifyEventCodeEnum::ON_MODIFY()->getValue(), 'logs-dir');
+
+        /**
+         * @var int
+         */
+        $events = InotifyEventCodeEnum::ON_MODIFY()->getValue();
+        $resource = new WatchedResource($this->getLogsDirectory(), $events, 'logs-dir');
         $this->inotify->addWatch($resource);
     }
 

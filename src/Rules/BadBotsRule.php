@@ -22,10 +22,10 @@ class BadBotsRule implements IRule, LoggerAwareInterface
      */
     protected array $bads = [];
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, Local\File $file)
     {
         $this->logger = $logger;
-        $this->file = new Local\File(__DIR__.'/../../assets/bad-user-agents.list');
+        $this->file = $file;
         try {
             $this->update();
         } catch (Exception $e) {
