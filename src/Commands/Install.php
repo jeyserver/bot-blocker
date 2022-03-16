@@ -3,10 +3,10 @@
 namespace Arad\BotBlocker\Commands;
 
 use dnj\Filesystem\Local;
+use Illuminate\Container\Container;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Illuminate\Container\Container;
 
 class Install extends Command
 {
@@ -37,7 +37,10 @@ class Install extends Command
             return Command::FAILURE;
         }
 
-        $pathToBotBlocker = $this->app->make("bin-path");
+        /**
+         * @var string
+         */
+        $pathToBotBlocker = $this->app->make('bin-path');
         $phpBin = PHP_BINARY;
         $content = <<<EOF
 [Service]
