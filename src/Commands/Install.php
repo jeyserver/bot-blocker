@@ -43,6 +43,8 @@ class Install extends Command
 [Service]
 Type=simple
 ExecStart={$phpBin} -d disable_functions {$pathToBotBlocker} start -q
+Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target
