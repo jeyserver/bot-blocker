@@ -29,13 +29,13 @@ class LogFile
         }
         $fd = fopen($this->path, 'r');
         if (false === $fd) {
-            throw new Exception();
+            throw new Exception('can not call fopen on file: '.$this->path);
         }
         $this->fd = $fd;
         fseek($this->fd, 0, SEEK_END);
         $inode = fileinode($this->path);
         if (false === $inode) {
-            throw new Exception();
+            throw new Exception('can not call fileinode on file: '.$this->path);
         }
         $this->inode = $inode;
     }
@@ -55,7 +55,11 @@ class LogFile
      */
     public function read(): Generator
     {
-        if (fileinode($this->path) != $this->inode) {
+        $stat = stat($this->path);
+        if (false === $stat) {
+            throw new Exception('can not call stat on file: '.$this->path);
+        }
+        if ($stat['ino'] != $this->inode or $stat['size'] < ftell($this->fd)) {
             $this->reopen();
         }
         $line = stream_get_line($this->fd, 10 * 1024, PHP_EOL);

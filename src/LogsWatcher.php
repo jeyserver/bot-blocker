@@ -108,9 +108,14 @@ class LogsWatcher implements LoggerAwareInterface
             }
         }
         $this->logger->debug('start reading new entries', ['path' => $path]);
-        foreach ($this->logFiles[$path]->read() as $entry) {
-            $this->logger->debug('readed log event', [$entry]);
-            yield new LogEvent($entry);
+        try {
+            foreach ($this->logFiles[$path]->read() as $entry) {
+                $this->logger->debug('readed log event', [$entry]);
+                yield new LogEvent($entry);
+            }
+        } catch (Exception $e) {
+            $this->logger->debug('error read entry from log file', ['path' => $path, 'exception' => $e->__toString()]);
+            unset($this->logFiles[$path]);
         }
     }
 
