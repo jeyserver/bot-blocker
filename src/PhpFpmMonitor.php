@@ -78,11 +78,11 @@ class PhpFpmMonitor implements IMonitorSystem, LoggerAwareInterface
         sort($this->files);
         sort($this->lastFiles);
         if (
-            array_sum($this->errorsCount) >= $this->restartThreshold and
-            (
-                null === $this->lastRestart or
-                $now - $this->lastRestart > 60 or
-                ($now - $this->lastRestart > 10 and $this->lastFiles != $this->files)
+            array_sum($this->errorsCount) >= $this->restartThreshold
+            and (
+                null === $this->lastRestart
+                or $now - $this->lastRestart > 60
+                or ($now - $this->lastRestart > 10 and $this->lastFiles != $this->files)
             )
         ) {
             $this->logger->notice('restart php fpm services', [

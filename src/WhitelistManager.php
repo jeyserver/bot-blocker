@@ -32,10 +32,10 @@ class WhitelistManager
     public function has(string $ip): bool
     {
         return
-            in_array($ip, $this->ips) or
-            $this->csfAllowList->has($ip) or
-            $this->selfIPs->has($ip) or
-            $this->isLoopback($ip);
+            in_array($ip, $this->ips)
+            or $this->csfAllowList->has($ip)
+            or $this->selfIPs->has($ip)
+            or $this->isLoopback($ip);
     }
 
     protected function isLoopback(string $ip): bool

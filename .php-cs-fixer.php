@@ -11,6 +11,10 @@ $config = new PhpCsFixer\Config();
 return $config->setRules([
         '@Symfony' => true,
         'phpdoc_to_comment' => false,
+        'global_namespace_import' => false,
+        'no_superfluous_phpdoc_tags' => [
+            'allow_mixed' => true,
+        ],
     ])
     ->setFinder($finder)
 ;

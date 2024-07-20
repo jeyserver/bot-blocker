@@ -10,6 +10,7 @@ use OutOfBoundsException;
 
 /**
  * @template T
+ *
  * @implements ArrayAccess<int,T>
  * @implements Iterator<int,T>
  */
@@ -79,6 +80,7 @@ class SortedList implements Countable, Iterator, ArrayAccess
     /**
      * @return T
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $this->insureValidOffset($offset);
@@ -108,6 +110,7 @@ class SortedList implements Countable, Iterator, ArrayAccess
     /**
      * @return T
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->data[$this->position];
