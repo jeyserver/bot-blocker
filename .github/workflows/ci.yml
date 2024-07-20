@@ -1,0 +1,132 @@
+name: Test, Build and Release
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [7.4, 8.1]
+
+    name: PHP ${{ matrix.php }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: inotify
+          ini-values: error_reporting=E_ALL
+          tools: composer:v2
+          coverage: none
+
+      - name: Composer version
+        run: composer --version
+
+      - name: Validate composer
+        run: composer validate --strict
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 2
+          command: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Run test types
+        run: composer run test:types
+
+      - name: Run test codestyle
+        run: composer run test:codestyle
+
+  build-phar:
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    name: Build phar file
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: inotify
+          ini-values: error_reporting=E_ALL
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Install box globally
+        run: composer global require humbug/box
+
+      - name: Compile PHAR
+        run: composer global exec box compile
+
+      - name: Save build environment
+        run: echo "BUILD_PHAR_CI_JOB_ID=${{ github.run_id }}" >> build.env
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bot-blocker.phar
+          path: |
+            bot-blocker.phar
+            config.json
+            build.env
+
+      - name: Create release
+        if: github.ref_type == 'tag'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref }}
+          body: "Automated release of bot-blocker"
+          draft: false
+          prerelease: false
+
+      - name: Make zip file that contains bot-blocker.phar and config.json
+        if: github.ref_type == 'tag'
+        run: |
+          zip bot-blocker-phar.zip bot-blocker.phar config.json build.env
+
+      - name: Upload Release Asset
+        if: github.ref_type == 'tag'
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bot-blocker-phar.zip
+          asset_name: bot-blocker.zip
+          asset_content_type: application/zip
