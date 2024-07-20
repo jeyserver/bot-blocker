@@ -1,3 +1,4 @@
+/.phpstan
 /.php-cs-fixer.cache
 /bad-user-agents.list
 /vendor
