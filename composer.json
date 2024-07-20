@@ -10,7 +10,7 @@
 		"kassner/log-parser": "^2.1",
 		"league/mime-type-detection": "^1.9",
 		"krowinski/php-inotify": "^2.0",
-		"illuminate/container": "5.4",
+		"illuminate/container": "^5.4",
 		"guzzlehttp/guzzle": "^7.4",
 		"dnj/tmp-filesystem": "^1.1",
 		"symfony/console": "^5.0",
