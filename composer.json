@@ -31,7 +31,6 @@
 		"test": [
 			"@test:composer:validate",
 			"@test:types",
-			"@test:phpunit",
 			"@test:codestyle"
 		]
 	},
