@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [7.4, 8.1]
+        php: [7.4, 8.1, 8.2]
 
     name: PHP ${{ matrix.php }}
     steps:
@@ -46,7 +46,7 @@ jobs:
         with:
           timeout_minutes: 5
           max_attempts: 2
-          command: composer install --prefer-dist --no-interaction --no-progress
+          command: composer update --prefer-dist --no-interaction --no-progress
 
       - name: Run test types
         run: composer run test:types
@@ -83,10 +83,10 @@ jobs:
             ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+        run: composer update --prefer-dist --no-interaction --no-progress
 
       - name: Install box globally
-        run: composer global require humbug/box
+        run: composer global require humbug/box --no-interaction --no-progress
 
       - name: Compile PHAR
         run: composer global exec box compile
@@ -106,7 +106,7 @@ jobs:
       - name: Make zip file that contains bot-blocker.phar and config.json
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          zip bot-blocker-phar.zip bot-blocker.phar config.json build.env
+          zip bot-blocker.zip bot-blocker.phar config.json build.env
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -114,6 +114,6 @@ jobs:
         with:
           generate_release_notes: true
           files: |
-            bot-blocker-phar.zip
+            bot-blocker.zip
             bot-blocker.phar
             config.json
