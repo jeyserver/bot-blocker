@@ -98,7 +98,10 @@ class LogEntry implements \JsonSerializable
         return $this->referer;
     }
 
-    public function jsonSerialize()
+    /**
+     * @return array{status?:int,remoteHost?:string,user?:string,time?:int,requestMethod?:string,path?:string,queries?:string,responseBytes?:int,scheme?:string,serverName?:string,userAgent?:string,referer?:string}
+     */
+    public function jsonSerialize(): array
     {
         $json = [];
         foreach (['status', 'remoteHost', 'user', 'time', 'requestMethod', 'path', 'queries', 'responseBytes', 'scheme', 'serverName', 'userAgent', 'referer'] as $key) {
