@@ -7,12 +7,13 @@
 		"php": "^7.4|^8.0",
 		"dnj/local-filesystem": "^1.0",
 		"dnj/log": "^1.1",
-		"kassner/log-parser": "^2.1",
-		"league/mime-type-detection": "^1.9",
-		"krowinski/php-inotify": "^2.0",
-		"illuminate/container": "^5.4",
-		"guzzlehttp/guzzle": "^7.4",
 		"dnj/tmp-filesystem": "^1.1",
+		"guzzlehttp/guzzle": "^7.4",
+		"illuminate/container": "^5.4",
+		"kassner/log-parser": "^2.1",
+		"krowinski/php-inotify": "^2.0",
+		"league/mime-type-detection": "^1.9",
+		"mlocati/ip-lib": "^1.18",
 		"symfony/console": "^5.0",
 		"webignition/php-path-resolver": "^0.4.0"
 	},
@@ -45,6 +46,7 @@
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"config": {
-		"allow-plugins": false
+		"allow-plugins": false,
+		"sort-packages": true
 	}
 }

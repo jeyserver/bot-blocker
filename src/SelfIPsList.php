@@ -2,12 +2,16 @@
 
 namespace Arad\BotBlocker;
 
+use IPLib\Address\AddressInterface;
+use IPLib\Factory as IPLibFactory;
+use IPLib\Range\RangeInterface;
+
 class SelfIPsList
 {
     /**
-     * @var string[]
+     * @var RangeInterface[]
      */
-    protected array $ips = [];
+    protected array $ipRanges = [];
 
     public function reload(): void
     {
@@ -15,11 +19,22 @@ class SelfIPsList
         if (!$output) {
             return;
         }
-        $this->ips = explode(' ', trim($output));
+        foreach (explode(' ', trim($output)) as $payload) {
+            $range = IPLibFactory::parseRangeString($payload);
+            if ($range) {
+                $this->ipRanges[] = $range;
+            }
+        }
     }
 
-    public function has(string $ip): bool
+    public function has(AddressInterface $ip): bool
     {
-        return in_array($ip, $this->ips);
+        foreach ($this->ipRanges as $ipRange) {
+            if ($ipRange->contains($ip)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

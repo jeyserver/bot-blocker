@@ -64,8 +64,9 @@ class BruteForceRule implements IRule
         if (null === $ip) {
             return 0;
         }
-        $this->ips[$ip] = ($this->ips[$ip] ?? 0) + 1;
+        $ipString = $ip->toString();
+        $this->ips[$ipString] = ($this->ips[$ipString] ?? 0) + 1;
 
-        return $this->ips[$ip] / $this->maxRequests;
+        return $this->ips[$ipString] / $this->maxRequests;
     }
 }

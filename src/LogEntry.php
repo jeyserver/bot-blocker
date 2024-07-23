@@ -2,13 +2,15 @@
 
 namespace Arad\BotBlocker;
 
+use IPLib\Address\AddressInterface;
+use IPLib\Factory as IPLibFactory;
 use Kassner\LogParser\LogParser;
 
 class LogEntry implements \JsonSerializable
 {
     protected LogFile $file;
     protected ?int $status = null;
-    protected ?string $remoteHost = null;
+    protected ?AddressInterface $remoteHost = null;
     protected ?string $user = null;
     protected ?int $time = null;
     protected ?string $requestMethod = null;
@@ -40,7 +42,7 @@ class LogEntry implements \JsonSerializable
         return $this->status;
     }
 
-    public function getRemoteHost(): ?string
+    public function getRemoteHost(): ?AddressInterface
     {
         return $this->remoteHost;
     }
@@ -99,14 +101,22 @@ class LogEntry implements \JsonSerializable
     }
 
     /**
-     * @return array{status?:int,remoteHost?:string,user?:string,time?:int,requestMethod?:string,path?:string,queries?:string,responseBytes?:int,scheme?:string,serverName?:string,userAgent?:string,referer?:string}
+     * @return array{status?:int,remoteHost?:AddressInterface,user?:string,time?:int,requestMethod?:string,path?:string,queries?:string,responseBytes?:int,scheme?:string,serverName?:string,userAgent?:string,referer?:string}
      */
     public function jsonSerialize(): array
     {
         $json = [];
         foreach (['status', 'remoteHost', 'user', 'time', 'requestMethod', 'path', 'queries', 'responseBytes', 'scheme', 'serverName', 'userAgent', 'referer'] as $key) {
-            if (isset($this->{$key})) {
-                $json[$key] = $this->{$key};
+            switch ($key) {
+                case 'remoteHost':
+                    if ($this->remoteHost) {
+                        $json[$key] = $this->remoteHost->toString();
+                    }
+                    break;
+                default:
+                    if (isset($this->{$key})) {
+                        $json[$key] = $this->{$key};
+                    }
             }
         }
 
@@ -121,8 +131,8 @@ class LogEntry implements \JsonSerializable
         if (isset($entry->status)) {
             $this->status = intval($entry->status);
         }
-        if (isset($entry->host)) {
-            $this->remoteHost = $this->makeItNull($entry->host);
+        if (isset($entry->host) && $host = $this->makeItNull($entry->host)) {
+            $this->remoteHost = IPLibFactory::parseAddressString($host);
         }
         if (isset($entry->user)) {
             $this->user = $this->makeItNull($entry->user);

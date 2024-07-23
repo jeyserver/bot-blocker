@@ -4,6 +4,9 @@ namespace Arad\BotBlocker;
 
 use dnj\Filesystem\Local\File;
 use Exception;
+use IPLib\Address\AddressInterface;
+use IPLib\Factory as IPLibFactory;
+use IPLib\Range\RangeInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -12,17 +15,14 @@ use Psr\Log\LoggerInterface;
  */
 class CsfAllowList implements LoggerAwareInterface
 {
-    /**
-     * @var SortedList<int>
-     */
-    protected SortedList $ips;
+    /** @var RangeInterface[] */
+    protected array $ipRanges = [];
 
     protected LoggerInterface $logger;
 
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
-        $this->ips = new SortedList();
     }
 
     public function setLogger(LoggerInterface $logger): void
@@ -37,7 +37,7 @@ class CsfAllowList implements LoggerAwareInterface
 
     public function reload(): void
     {
-        $this->ips = new SortedList();
+        $this->ipRanges = [];
         $files = [
             new File('/etc/csf/csf.allow'),
             new File('/etc/csf/csf.ignore'),
@@ -62,27 +62,37 @@ class CsfAllowList implements LoggerAwareInterface
         }
     }
 
-    public function has(string $ip): bool
+    public function has(AddressInterface $ip): bool
     {
-        $ip = ip2long($ip);
-        if (false === $ip) {
-            return false;
+        foreach ($this->ipRanges as $ipRange) {
+            if ($ipRange->contains($ip)) {
+                return true;
+            }
         }
 
-        return $this->ips->has($ip);
+        return false;
     }
 
     /**
-     * @return \Generator<string>
+     * @return \Generator<AddressInterface>
      */
     public function getIPs(): \Generator
     {
-        foreach ($this->ips as $ip) {
-            $ip = long2ip($ip);
-            if (false === $ip) {
-                continue;
+        foreach ($this->ipRanges as $ipRange) {
+            yield from $this->getIpsFromRange($ipRange);
+        }
+    }
+
+    /**
+     * @return \Generator<AddressInterface>
+     */
+    protected function getIpsFromRange(RangeInterface $range): \Generator
+    {
+        for ($x = 0; $x < $range->getSize(); ++$x) {
+            $ip = $range->getAddressAtOffset($x);
+            if ($ip) {
+                yield $ip;
             }
-            yield $ip;
         }
     }
 
@@ -101,42 +111,10 @@ class CsfAllowList implements LoggerAwareInterface
         if (false !== strpos($line, '|')) {
             return;
         }
-        $subnet = $this->getSubnet($line);
-        $this->addSubnet($subnet);
-    }
 
-    /**
-     * @param Subnet $subnet
-     */
-    protected function addSubnet(array $subnet): void
-    {
-        for ($x = $subnet[0]; $x < $subnet[1]; ++$x) {
-            $this->ips->add($x);
+        $range = IPLibFactory::parseRangeString($line);
+        if ($range) {
+            $this->ipRanges[] = $range;
         }
-    }
-
-    /**
-     * @return Subnet
-     */
-    protected function getSubnet(string $subnet): array
-    {
-        if (!preg_match("/^([\d\.]+)(?:\/(\d+))?$/", $subnet, $matches)) {
-            throw new Exception("'{$subnet}' is not valid subnet");
-        }
-        $network = $matches[1];
-        $netmask = isset($matches[2]) ? intval($matches[2]) : 32;
-        if (!filter_var($network, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            throw new Exception("'{$subnet}' is not valid subnet");
-        }
-        if ($netmask > 32) {
-            throw new Exception("'{$subnet}' is not valid subnet");
-        }
-        $start = ip2long($network);
-        if (false === $start) {
-            throw new Exception();
-        }
-        $end = $start + pow(2, 32 - $netmask);
-
-        return [$start, $end];
     }
 }

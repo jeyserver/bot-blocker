@@ -3,6 +3,8 @@
 namespace Arad\BotBlocker;
 
 use Exception;
+use IPLib\Address\AddressInterface;
+use IPLib\Factory as IPLibFactory;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use SplFileInfo;
@@ -43,28 +45,28 @@ class NginxBlocker implements IDefenseSystem, LoggerAwareInterface
         return $this->logger;
     }
 
-    public function block(string $ip, int $until): void
+    public function block(AddressInterface $ip, int $until): void
     {
         if ($until < time()) {
             throw new Exception();
         }
         if ($this->whiteList->has($ip)) {
-            $this->logger->info('ip is whitelisted, ignore', ['ip' => $ip]);
+            $this->logger->info('ip is whitelisted, ignore', ['ip' => $ip->toString()]);
 
             return;
         }
-        $this->blocks[$ip] = $until;
+        $this->blocks[$ip->toString()] = $until;
         $this->rewrite();
     }
 
-    public function unblock(string $ip): void
+    public function unblock(AddressInterface $ip): void
     {
-        if (!isset($this->blocks[$ip])) {
-            $this->logger->debug('ip is not blocked, ignore', ['ip' => $ip]);
+        if (!isset($this->blocks[$ip->toString()])) {
+            $this->logger->debug('ip is not blocked, ignore', ['ip' => $ip->toString()]);
 
             return;
         }
-        unset($this->blocks[$ip]);
+        unset($this->blocks[$ip->toString()]);
         $this->rewrite();
     }
 
@@ -83,9 +85,9 @@ class NginxBlocker implements IDefenseSystem, LoggerAwareInterface
         $this->rewrite();
     }
 
-    public function isBlocked(string $ip): ?int
+    public function isBlocked(AddressInterface $ip): ?int
     {
-        return $this->blocks[$ip] ?? null;
+        return $this->blocks[$ip->toString()] ?? null;
     }
 
     protected function rewrite(): void
@@ -119,12 +121,15 @@ class NginxBlocker implements IDefenseSystem, LoggerAwareInterface
             if (!preg_match("/^deny (.+);\s*\# until (\d+)$/", $line, $matches)) {
                 continue;
             }
-            $ip = strval($matches[1]);
+            $ip = IPLibFactory::parseAddressString(strval($matches[1]));
+            if (!$ip) {
+                continue; // This should not be happend.
+            }
             $until = intval($matches[2]);
             if ($this->whiteList->has($ip) or $until < time()) {
                 $needToRewrite = true;
             } else {
-                $this->blocks[$ip] = $until;
+                $this->blocks[$ip->toString()] = $until;
             }
         }
         unset($file);
