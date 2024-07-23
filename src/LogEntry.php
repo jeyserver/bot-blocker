@@ -1,6 +1,6 @@
 <?php
 
-namespace Arad\BotBlocker;
+namespace Jeyserver\BotBlocker;
 
 use IPLib\Address\AddressInterface;
 use IPLib\Factory as IPLibFactory;

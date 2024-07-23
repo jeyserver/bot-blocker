@@ -1,26 +1,26 @@
 {
 	"rules": [
-		"Arad\\BotBlocker\\Rules\\AlreadyBlockedRule",
-		"Arad\\BotBlocker\\Rules\\WhiteListedRule",
-		"Arad\\BotBlocker\\Rules\\GoogleBotRule",
-		"Arad\\BotBlocker\\Rules\\StaticFileRule",
-		"Arad\\BotBlocker\\Rules\\WPAdminRequestRule",
-		"Arad\\BotBlocker\\Rules\\ServerErrorRule",
+		"Jeyserver\\BotBlocker\\Rules\\AlreadyBlockedRule",
+		"Jeyserver\\BotBlocker\\Rules\\WhiteListedRule",
+		"Jeyserver\\BotBlocker\\Rules\\GoogleBotRule",
+		"Jeyserver\\BotBlocker\\Rules\\StaticFileRule",
+		"Jeyserver\\BotBlocker\\Rules\\WPAdminRequestRule",
+		"Jeyserver\\BotBlocker\\Rules\\ServerErrorRule",
 		{
-			"name": "Arad\\BotBlocker\\Rules\\BadBotsRule",
+			"name": "Jeyserver\\BotBlocker\\Rules\\BadBotsRule",
 			"options": {
 				"list": "bad-user-agents.list"
 			}
 		},
 		{
-			"name": "Arad\\BotBlocker\\Rules\\WPBruteForceRule",
+			"name": "Jeyserver\\BotBlocker\\Rules\\WPBruteForceRule",
 			"options": {
 				"maxRequests": 10,
 				"period": 60
 			}
 		},
 		{
-			"name": "Arad\\BotBlocker\\Rules\\BruteForceRule",
+			"name": "Jeyserver\\BotBlocker\\Rules\\BruteForceRule",
 			"options": {
 				"maxRequests": 100,
 				"period": 120
@@ -28,7 +28,7 @@
 		}
 	],
 	"google-bot-detector": {
-		"name": "Arad\\BotBlocker\\GoogleBotDetector",
+		"name": "Jeyserver\\BotBlocker\\GoogleBotDetector",
 		"options": {
 			"files": {
 				"goog.json": {
@@ -55,6 +55,6 @@
 		"quiet": true,
 		"level": "notice"
 	},
-	"monitor-system": "Arad\\BotBlocker\\PhpFpmMonitor",
-	"defense-system": "Arad\\BotBlocker\\CsfFirewall"
+	"monitor-system": "Jeyserver\\BotBlocker\\PhpFpmMonitor",
+	"defense-system": "Jeyserver\\BotBlocker\\CsfFirewall"
 }

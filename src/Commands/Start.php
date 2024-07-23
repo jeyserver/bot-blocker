@@ -1,8 +1,8 @@
 <?php
 
-namespace Arad\BotBlocker\Commands;
+namespace Jeyserver\BotBlocker\Commands;
 
-use Arad\BotBlocker\LogAnalyzer;
+use Jeyserver\BotBlocker\LogAnalyzer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

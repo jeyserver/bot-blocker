@@ -1,10 +1,10 @@
 <?php
 
-namespace Arad\BotBlocker\Rules;
+namespace Jeyserver\BotBlocker\Rules;
 
-use Arad\BotBlocker\IRule;
-use Arad\BotBlocker\LogEntry;
-use Arad\BotBlocker\WhitelistManager;
+use Jeyserver\BotBlocker\IRule;
+use Jeyserver\BotBlocker\LogEntry;
+use Jeyserver\BotBlocker\WhitelistManager;
 
 class WhiteListedRule implements IRule
 {

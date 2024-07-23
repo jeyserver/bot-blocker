@@ -1,6 +1,6 @@
 <?php
 
-namespace Arad\BotBlocker\Commands;
+namespace Jeyserver\BotBlocker\Commands;
 
 use dnj\Filesystem\Local;
 use Illuminate\Container\Container;

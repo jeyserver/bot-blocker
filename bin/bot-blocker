@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-namespace Arad\BotBlocker;
+namespace Jeyserver\BotBlocker;
 
 use Symfony\Component\Console\Application;
 

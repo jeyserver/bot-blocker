@@ -1,6 +1,6 @@
 <?php
 
-namespace Arad\BotBlocker;
+namespace Jeyserver\BotBlocker;
 
 class LogEvent
 {

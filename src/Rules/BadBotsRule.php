@@ -1,14 +1,14 @@
 <?php
 
-namespace Arad\BotBlocker\Rules;
+namespace Jeyserver\BotBlocker\Rules;
 
-use Arad\BotBlocker\IRule;
-use Arad\BotBlocker\LogEntry;
 use dnj\Filesystem\Exceptions\NotFoundException;
 use dnj\Filesystem\Local;
 use dnj\Filesystem\Tmp;
 use Exception;
 use GuzzleHttp\Client;
+use Jeyserver\BotBlocker\IRule;
+use Jeyserver\BotBlocker\LogEntry;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 

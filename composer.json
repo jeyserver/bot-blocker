@@ -1,8 +1,8 @@
 {
-	"name": "arad/bot-blocker",
+	"name": "jeyserver/bot-blocker",
 	"description": "Watch and analyze Nginx access logs to block bad bots and crawlers.",
 	"license": "proprietary",
-	"homepage": "https://git.jeyserver.com/arad/bot-blocker",
+	"homepage": "https://git.jeyserver.com/jeyserver/bot-blocker",
 	"require": {
 		"php": "^7.4|^8.0",
 		"dnj/local-filesystem": "^1.0",
@@ -37,7 +37,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Arad\\BotBlocker\\": "src/"
+			"Jeyserver\\BotBlocker\\": "src/"
 		}
 	},
 	"bin": [

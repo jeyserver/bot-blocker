@@ -1,6 +1,6 @@
 <?php
 
-namespace Arad\BotBlocker;
+namespace Jeyserver\BotBlocker;
 
 use Exception;
 use IPLib\Address\AddressInterface;
