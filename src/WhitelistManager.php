@@ -2,13 +2,11 @@
 
 namespace Arad\BotBlocker;
 
+use IPLib\Address\AddressInterface;
+use IPLib\Factory as IPLibFactory;
+
 class WhitelistManager
 {
-    /**
-     * @var string[]
-     */
-    protected array $ips = [];
-
     protected CsfAllowList $csfAllowList;
     protected SelfIPsList $selfIPs;
 
@@ -22,31 +20,25 @@ class WhitelistManager
         $this->selfIPs->reload();
     }
 
-    public function add(string $ip): void
-    {
-        if (!$this->has($ip)) {
-            $this->ips[] = $ip;
-        }
-    }
-
-    public function has(string $ip): bool
+    public function has(AddressInterface $ip): bool
     {
         return
-            in_array($ip, $this->ips)
-            or $this->csfAllowList->has($ip)
+            $this->csfAllowList->has($ip)
             or $this->selfIPs->has($ip)
             or $this->isLoopback($ip);
     }
 
-    protected function isLoopback(string $ip): bool
+    protected function isLoopback(AddressInterface $ip): bool
     {
-        $start = 2130706432; // ip2long("127.0.0.0");
-        $end = 2147483648; // $start + pow(2, 32 - 8);
-        $long = ip2long($ip);
-        if (false === $long) {
-            return false;
+        foreach ([
+            IPLibFactory::parseRangeString('::1/128'),
+            IPLibFactory::parseRangeString('127.0.0.0/8'),
+        ] as $loopbackRange) {
+            if ($loopbackRange && $loopbackRange->contains($ip)) {
+                return true;
+            }
         }
 
-        return $long >= $start and $long < $end;
+        return false;
     }
 }

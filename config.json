@@ -27,6 +27,29 @@
 			}
 		}
 	],
+	"google-bot-detector": {
+		"name": "Arad\\BotBlocker\\GoogleBotDetector",
+		"options": {
+			"files": {
+				"goog.json": {
+					"path": "google-bot-detector/goog.json",
+					"url": "https://www.gstatic.com/ipranges/goog.json"
+				},
+				"googlebot.json": {
+					"path": "google-bot-detector/googlebot.json",
+					"url": "https://developers.google.com/static/search/apis/ipranges/googlebot.json"
+				},
+				"special-crawlers.json": {
+					"path": "google-bot-detector/special-crawlers.json",
+					"url": "https://developers.google.com/static/search/apis/ipranges/special-crawlers.json"
+				},
+				"user-triggered-fetchers.json": {
+					"path": "google-bot-detector/user-triggered-fetchers.json",
+					"url": "https://developers.google.com/static/search/apis/ipranges/user-triggered-fetchers.json"
+				}
+			}
+		}
+	},
 	"logging": {
 		"file": "/var/log/bot-blocker.log",
 		"quiet": true,

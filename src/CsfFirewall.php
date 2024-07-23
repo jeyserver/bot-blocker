@@ -3,6 +3,7 @@
 namespace Arad\BotBlocker;
 
 use Exception;
+use IPLib\Address\AddressInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -38,27 +39,27 @@ class CsfFirewall implements IDefenseSystem, LoggerAwareInterface
         return $this->logger;
     }
 
-    public function block(string $ip, int $until): void
+    public function block(AddressInterface $ip, int $until): void
     {
         if ($until < time()) {
             throw new Exception();
         }
         if ($this->whiteList->has($ip)) {
-            $this->logger->info('ip is whitelisted, ignore', ['ip' => $ip]);
+            $this->logger->info('ip is whitelisted, ignore', ['ip' => $ip->toString()]);
 
             return;
         }
         $ttl = time() - $until;
-        shell_exec("csf -td {$ip} {$ttl} \"Blocked by bot-blocker\"");
-        $this->blocks[$ip] = $until;
+        shell_exec("csf -td \"{$ip->toString()}\" {$ttl} \"Blocked by bot-blocker\"");
+        $this->blocks[$ip->toString()] = $until;
     }
 
-    public function unblock(string $ip): void
+    public function unblock(AddressInterface $ip): void
     {
-        if (isset($this->blocks[$ip])) {
-            unset($this->blocks[$ip]);
+        if (isset($this->blocks[$ip->toString()])) {
+            unset($this->blocks[$ip->toString()]);
         }
-        shell_exec("csf --temprmd {$ip}");
+        shell_exec("csf --temprmd \"{$ip->toString()}\"");
     }
 
     public function clear(): void
@@ -75,8 +76,8 @@ class CsfFirewall implements IDefenseSystem, LoggerAwareInterface
         }
     }
 
-    public function isBlocked(string $ip): ?int
+    public function isBlocked(AddressInterface $ip): ?int
     {
-        return $this->blocks[$ip] ?? null;
+        return $this->blocks[$ip->toString()] ?? null;
     }
 }

@@ -2,13 +2,15 @@
 
 namespace Arad\BotBlocker;
 
+use IPLib\Address\AddressInterface;
+
 interface IDefenseSystem
 {
-    public function block(string $ip, int $until): void;
+    public function block(AddressInterface $ip, int $until): void;
 
-    public function unblock(string $ip): void;
+    public function unblock(AddressInterface $ip): void;
 
     public function clear(): void;
 
-    public function isBlocked(string $ip): ?int;
+    public function isBlocked(AddressInterface $ip): ?int;
 }

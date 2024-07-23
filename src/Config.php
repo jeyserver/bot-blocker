@@ -14,6 +14,7 @@ class Config
     public static function parseFromFile(File $file): self
     {
         $config = json_decode($file->read(), true, 512, JSON_THROW_ON_ERROR);
+        self::setClassOptions($config, 'google-bot-detector');
         self::setClassOptions($config, 'defense-system');
         self::setClassOptions($config, 'monitor-system');
         if (isset($config['rules']) and is_array($config['rules'])) {
