@@ -1,10 +1,10 @@
 <?php
 
-namespace Arad\BotBlocker\Rules;
+namespace Jeyserver\BotBlocker\Rules;
 
-use Arad\BotBlocker\GoogleBotDetector;
-use Arad\BotBlocker\IRule;
-use Arad\BotBlocker\LogEntry;
+use Jeyserver\BotBlocker\GoogleBotDetector;
+use Jeyserver\BotBlocker\IRule;
+use Jeyserver\BotBlocker\LogEntry;
 
 class GoogleBotRule implements IRule
 {

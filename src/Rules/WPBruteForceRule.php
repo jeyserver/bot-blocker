@@ -1,8 +1,8 @@
 <?php
 
-namespace Arad\BotBlocker\Rules;
+namespace Jeyserver\BotBlocker\Rules;
 
-use Arad\BotBlocker\LogEntry;
+use Jeyserver\BotBlocker\LogEntry;
 
 class WPBruteForceRule extends BruteForceRule
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Arad\BotBlocker\Rules;
+namespace Jeyserver\BotBlocker\Rules;
 
-use Arad\BotBlocker\IDefenseSystem;
-use Arad\BotBlocker\IRule;
-use Arad\BotBlocker\LogEntry;
+use Jeyserver\BotBlocker\IDefenseSystem;
+use Jeyserver\BotBlocker\IRule;
+use Jeyserver\BotBlocker\LogEntry;
 
 class AlreadyBlockedRule implements IRule
 {

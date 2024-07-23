@@ -1,6 +1,6 @@
 <?php
 
-namespace Arad\BotBlocker;
+namespace Jeyserver\BotBlocker;
 
 use dnj\Filesystem\Local\File;
 use dnj\Log\Logger;

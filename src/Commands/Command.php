@@ -1,11 +1,11 @@
 <?php
 
-namespace Arad\BotBlocker\Commands;
+namespace Jeyserver\BotBlocker\Commands;
 
-use Arad\BotBlocker\Config;
 use dnj\Filesystem\Local;
 use Exception;
 use Illuminate\Container\Container;
+use Jeyserver\BotBlocker\Config;
 use Symfony\Component\Console\Command\Command as ParentCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

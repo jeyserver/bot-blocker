@@ -1,9 +1,9 @@
 <?php
 
-namespace Arad\BotBlocker\Rules;
+namespace Jeyserver\BotBlocker\Rules;
 
-use Arad\BotBlocker\IRule;
-use Arad\BotBlocker\LogEntry;
+use Jeyserver\BotBlocker\IRule;
+use Jeyserver\BotBlocker\LogEntry;
 
 class WPAdminRequestRule implements IRule
 {
